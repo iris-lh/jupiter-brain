@@ -7,36 +7,23 @@ const options = {
   cacheDir: '.parcel-cache',
 }
 
-function buildTemplates () {
-  console.log("Building templates...")
-  const paths = fs.readdirSync('./templates')
+function buildPointerFile (folderName) {
+  console.log(`Building ${folderName}`)
+  const paths = fs.readdirSync(`./${folderName}`)
   const lines = []
   lines.push('module.exports = {')
   paths.forEach(path => {
     const name = path.split('.')[0]
-    lines.push(`  '${name}': require('./templates/${path}'),`)
+    lines.push(`  '${name}': require('./${folderName}/${path}'),`)
   })
   lines.push('}')
-  fs.writeFileSync('./templates.js', lines.join('\n'))
-}
-
-function buildScripts () {
-  console.log("Building scripts...")
-  const paths = fs.readdirSync('./scripts')
-  const lines = []
-  lines.push('module.exports = {')
-  paths.forEach(path => {
-    const name = path.split('.')[0]
-    lines.push(`  '${name}': require('./scripts/${path}'),`)
-  })
-  lines.push('}')
-  fs.writeFileSync('./scripts.js', lines.join('\n'))
+  fs.writeFileSync(`./${folderName}.js`, lines.join('\n'))
 }
 
 const go = async () => {
   const bundler = new Bundler(entryFiles, options)
-  buildTemplates()
-  buildScripts()
+  buildPointerFile('templates')
+  buildPointerFile('scripts')
 
   bundler.on('buildStart', entryPoints => {
   });
