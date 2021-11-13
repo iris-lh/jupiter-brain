@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const helpers = require('./helpers')
 const storage = require('./storage')
 
