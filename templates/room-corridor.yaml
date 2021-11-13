@@ -10,4 +10,4 @@ weights:
     room-chamber: 2
     room-corridor: 1
 spawn:
-  - [0,2,0.33,'table-spawn-easy',0.33]
+  - [0,2,'table-spawn-easy',0.33]
