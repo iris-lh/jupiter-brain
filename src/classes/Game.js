@@ -91,16 +91,6 @@ module.exports = class Game {
       this.state.pass = false
     }
   }
-
-  debugSpawnEntity(commandSuffix) {
-    const player = this.getPlayer()
-    this.addEntity(commandSuffix, player.x, player.y)
-  }
-
-  debugAddNanites(commandSuffix) {
-    const player = this.getPlayer()
-    player.nanites += parseInt(commandSuffix)
-  }
   
   processMoveCreature(id, dir) {
     const creature = this.getEntity(id)
