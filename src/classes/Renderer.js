@@ -28,27 +28,28 @@ module.exports = class Renderer {
   }
 
   _renderCommands(game) {
-    const exits = game.getCurrentRoom().exits.map(exit => {
-      if (exit === 'n') {
-        return color.whiteBg(color.black('n')) + 'orth'
-      }
-      else if (exit === 's') {
-        return color.whiteBg(color.black('s')) + 'outh'
-      }
-      else if (exit === 'e') {
-        return color.whiteBg(color.black('e')) + 'ast'
-      }
-      else if (exit === 'w') {
-        return color.whiteBg(color.black('w')) + 'est'
-      }
-    })
+    // const exits = game.getCurrentRoom().exits.map(exit => {
+    //   if (exit === 'n') {
+    //     return color.whiteBg(color.black('n')) + 'orth'
+    //   }
+    //   else if (exit === 's') {
+    //     return color.whiteBg(color.black('s')) + 'outh'
+    //   }
+    //   else if (exit === 'e') {
+    //     return color.whiteBg(color.black('e')) + 'ast'
+    //   }
+    //   else if (exit === 'w') {
+    //     return color.whiteBg(color.black('w')) + 'est'
+    //   }
+    // })
     const commands = []
     _.forOwn(game.commands[game.state.uiContext], (command, key) => {
       commands.push(command.longForm.replace(`(${key})`, color.whiteBg(color.black(key))))
     })
     commands.push(color.whiteBg(color.black('?')))
     const lines = [
-      `\r\nCOMMANDS: ${game.state.uiContext === 'map' ? exits.concat(commands).join(', ') : commands.join(', ')}`
+      // `\r\nCOMMANDS: ${game.state.uiContext === 'map' ? exits.concat(commands).join(', ') : commands.join(', ')}`
+      `\r\nCOMMANDS: ${commands.join(', ')}`
     ]
     return lines.join('\r\n')
   }

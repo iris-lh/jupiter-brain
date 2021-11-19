@@ -24,10 +24,15 @@ window.onresize = e => {
 }
 
 term.onKey(e => {
-  
   if (e.key === '\r') {
     term.clear()
     game.loop(input)
+    input = ''
+    term.write('\r' + renderer.render(game))
+  } 
+  else if (e.domEvent.key === 'Escape' && game.state.uiContext !== 'map') {
+    term.clear()
+    game.loop('m')
     input = ''
     term.write('\r' + renderer.render(game))
   } 

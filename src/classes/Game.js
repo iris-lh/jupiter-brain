@@ -122,7 +122,6 @@ module.exports = class Game {
         break;
     }
     if (isPlayer) {this.getCurrentRoom().explored = true}
-
   }
 
   spawnCreatures() {
