@@ -48,12 +48,18 @@ module.exports = class Game {
   loop(input) {
     this.state.messages = []
     this.handleInput(input)
-    
+
+    const player = this.getPlayer()
+    if (player.ap <= 0) {
+      this.state.pass = true
+    }
+
     while (this.state.pass && this.getPlayer().hp > 0) {
       this.tick()
     }
     
     this.processActions()
+    
 
     if (this.getPlayer().hp <= 0) {
 
@@ -63,7 +69,7 @@ module.exports = class Game {
       this.autoSave()
     }
   }
-  
+
   tick() {
     const player = this.getPlayer()
     this.getNearbyEntitiesWithout('player').forEach(creature => {
@@ -394,27 +400,32 @@ module.exports = class Game {
     const prefix = input[0]
     const suffix = input.slice(1)
 
+    if (!input) {
+      if (this.state.uiContext === 'map') {
+        this.state.pass = true
+      }
+      return
+    }
+
     if (input && this.getPlayer().hp > 0) {
       if (this.commands[this.state.uiContext][prefix] && suffix == '?') {
         const helpMsg = this.commands[this.state.uiContext][prefix].help
         this.addMessage(helpMsg)
-      } 
+      }
       else if (this.state.uiContext === 'map' && 'nsew'.includes(prefix)) {
         inputHandlers.handleMove(this, prefix)
       }
       else if (this.commands[this.state.uiContext][prefix]) {
         const handlerName = this.commands[this.state.uiContext][prefix].handler
         const handler = inputHandlers[handlerName]
+        console.log(handlerName, handler)
         handler(this, suffix)
-      } 
+      }
       else {
         this.addMessage('Invalid command: ' + input)
       }
-    } 
-    else if (this.state.uiContext === 'map') {
-      this.state.pass = true
     }
-    if (player.ap <= 0) {
+    else if (this.state.uiContext === 'map') {
       this.state.pass = true
     }
   }
@@ -442,7 +453,7 @@ module.exports = class Game {
     })
     this.state.actions = []
   }
-  
+
 
   // ADDERS
 
