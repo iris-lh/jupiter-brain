@@ -68,12 +68,12 @@ module.exports = function commands(game) {
       s: {
         longForm: '(s)pawn entity',
         help: '',
-        handler: 'debugSpawnEntity'
+        handler: 'handleDebugSpawnEntity'
       },
       n: {
         longForm: '(n)dd nanites',
         help: '',
-        handler: 'debugAddNanites'
+        handler: 'handleDebugAddNanites'
       }
     },
     map: {

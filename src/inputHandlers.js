@@ -263,5 +263,17 @@ module.exports = {
         game.addMessage(`CRIT: ${e.critRange}/x${e.critMult} | BASE AP COST: ${e.apCostBase}`)
       }
     }
+  },
+
+  // DEBUG FUNCTIONS
+
+  handleDebugSpawnEntity(game, commandSuffix) {
+    const player = game.getPlayer()
+    game.addEntity(commandSuffix, player.x, player.y)
+  },
+
+  handleDebugAddNanites(game, commandSuffix) {
+    const player = game.getPlayer()
+    player.nanites += parseInt(commandSuffix)
   }
 }
