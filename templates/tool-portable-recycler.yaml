@@ -1,0 +1,4 @@
+name: Portable Recycler
+inherits: tool
+onUse: onUseRecycler
+desc: 'This machine can be used to recycle unwanted items into nanites. This one is small enough to carry on your person.'

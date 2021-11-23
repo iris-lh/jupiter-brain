@@ -1,0 +1,4 @@
+name: Tool
+inherits: item
+tags: [usable]
+desc: 'Default tool description.'
