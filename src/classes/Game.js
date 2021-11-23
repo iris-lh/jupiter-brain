@@ -38,9 +38,10 @@ module.exports = class Game {
     
     this.commands = new commands(this)
     
+    // NEW GAME
     if (!save) {
-      this.addEntity('creature-player')
       this.goToNewMap()
+      this.addEntity('creature-player', this.state.map.startX, this.state.map.startY)
       this.autoSave()
     }
   }
@@ -362,14 +363,11 @@ module.exports = class Game {
 
   goToNewMap() {
     this.state.map = new Map(this.loader, 'map', this.state.depth)
-    this.getEntitiesWithout('player').forEach(entity => {
-      this.deleteEntity(entity.id)
-    })
+    // this.getEntitiesWithout('player').forEach(entity => {
+    //   this.deleteEntity(entity.id)
+    // })
     this.spawnCreatures()
     this.spawnLoot()
-    const player = this.getPlayer()
-    player.x = this.state.map.startX
-    player.y = this.state.map.startY
     this.state.depth += 1
   }  
 
