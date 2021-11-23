@@ -447,7 +447,6 @@ module.exports = class Game {
       else if (this.commands[this.state.uiContext][prefix]) {
         const handlerName = this.commands[this.state.uiContext][prefix].handler
         const handler = inputHandlers[handlerName]
-        console.log(handlerName, handler)
         handler(this, suffix)
       }
       else {

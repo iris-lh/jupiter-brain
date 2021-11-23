@@ -157,7 +157,6 @@ module.exports = class Renderer {
 
   _renderContextInventory(game) {
     const lines = []
-    const player = game.getPlayer()
     lines.push('INVENTORY')
     lines.push('')
     lines.push(this._renderEquipped(game))
