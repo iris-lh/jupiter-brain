@@ -3,7 +3,13 @@ name: Player
 inherits: creature
 tags: [player]
 hitDie: 8
-wielding: weapon-knife
+equipmentSlots: [
+  in-main-hand, in-off-hand, on-head, on-body, on-hands, on-feet, 
+  eyes, ears, head, torso, skin, left-arm, right-arm, left-leg, right-leg
+]
+wieldableSlots: [in-main-hand]
+startingEquipment: 
+    in-main-hand: weapon-knife
 apMax: 5
 ap: 5
 apRegen: 10

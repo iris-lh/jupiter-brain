@@ -14,7 +14,7 @@ function inherit(loader, templateName, hierarchy = []) {
 
 module.exports = function hydrateEntity(loader, templateName, x, y) {
   const hierarchy = inherit(loader, templateName)
-  const output = _.mergeWith({}, ...hierarchy, (objValue, srcValue)=>{
+  const entity = _.mergeWith({}, ...hierarchy, (objValue, srcValue)=>{
     if (_.isArray(objValue)) {
       return objValue.concat(srcValue);
     }
@@ -24,10 +24,14 @@ module.exports = function hydrateEntity(loader, templateName, x, y) {
   })
   
   // TODO use actual uuids to keep it random between sessions
-  output.id = output.id || uuid.v4()
-  output.x = x
-  output.y = y
+  entity.id = entity.id || uuid.v4()
+  entity.x = x
+  entity.y = y
 
-  return output
+  entity.removeTags.forEach(tagToRemove => {
+    _.pull(entity.tags, tagToRemove)
+  });
+
+  return entity
 }
 

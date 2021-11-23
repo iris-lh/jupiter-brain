@@ -72,13 +72,15 @@ module.exports = {
     const player = game.getPlayer()
     const entity = game.getNearbyEntitiesWithout('player')[index]
 
+    const grabable = entity.tags.includes('grabable')
+
     if (!entity) {
       game.addMessage('No item found.')
     }
-    else if (entity.tags.includes('item') && entity.grabable) {
+    else if (grabable) {
       game.creatureGrabItem(player.id, entity.id)
     }
-    else if (entity.tags.includes('item') || !entity.grabable) {
+    else if (!grabable) {
       game.addMessage(`You cannot grab the ${entity.name}.`)
     }
     else {
@@ -104,30 +106,49 @@ module.exports = {
     }
   },
 
+  // handleEquipItem(game, commandSuffix) {
+  //   const index = parseInt(commandSuffix)
+  //   const player = game.getPlayer()
+  //   const newItem = player.inventory[index]
+  //   if (newItem) {
+  //     const canEquip = _.intersection(newItem.equipableSlots, player.equipmentSlots).length > 0
+  //     if (!canEquip) return
+  //     // const oldItem = player[newItem.slot]
+  //     const oldItem = _.find(player.equipped, item => item.equipable.includes(newItem.equipableSlots))
+  //     if (oldItem) {
+  //       player.inventory.push(oldItem)
+  //     }
+  //     // player[newItem.slot] = newItem
+  //     player.equipped.push(newItem)
+  //     player.inventory = _.without(player.inventory, newItem)
+  //   }
+  // },
+
   handleEquipItem(game, commandSuffix) {
     const index = parseInt(commandSuffix)
     const player = game.getPlayer()
-    const newItem = player.inventory[index]
-    if (newItem) {
-      const oldItem = player[newItem.slot]
-      if (oldItem) {
-        player.inventory.push(oldItem)
-      }
-      player[newItem.slot] = newItem
-    }
-    player.inventory = _.without(player.inventory, newItem)
+    const itemId = player.inventory[index]
+    game.creatureEquipItem(player.id, itemId)
   },
+  
 
-  handleUnequipItem(game, commandSuffix) {
+  // handleUnequipItem(game, commandSuffix) {
+  //   const index = parseInt(commandSuffix)
+  //   const slots = ['wielding','head','body','hands','feet']
+  //   const slot = slots[index]
+  //   const player = game.getPlayer()
+  //   const item = player[slot]
+  //   if (item) {
+  //     player.inventory.push(item)
+  //     player[slot] = null
+  //   }
+  // },
+
+  handleUnequipSlot(game, commandSuffix) {
     const index = parseInt(commandSuffix)
-    const slots = ['wielding','head','body','hands','feet']
-    const slot = slots[index]
     const player = game.getPlayer()
-    const item = player[slot]
-    if (item) {
-      player.inventory.push(item)
-      player[slot] = null
-    }
+    const slotName = player.equipmentSlots[index]
+    game.creatureUnequipSlot(player.id, slotName)
   },
 
   handleMove(game, dir) {
@@ -178,8 +199,9 @@ module.exports = {
     game.addAction({type: 'attack', entityId: player.id, defenderId: target.id})
   },
 
-  handleUse(game,commandSuffix){
-    const index = parseInt(commandSuffix)
+  handleUse(game,commandSuffix = 0){
+    
+    const index = commandSuffix ? parseInt(commandSuffix) : 0
     const player = game.getPlayer()
     const context = game.state.uiContext
     let item

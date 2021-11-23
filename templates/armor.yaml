@@ -1,7 +1,5 @@
-name: Ballistic Vest
+name: Armor
 inherits: item
-subtype: armor
-tags: [armor]
+tags: [armor, equipable]
 desc: 'Default armor description.'
-acBonus: 0
 maxDex: 5

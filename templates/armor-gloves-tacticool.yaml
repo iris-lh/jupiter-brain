@@ -1,7 +1,6 @@
 name: Tacticool Gloves
 inherits: item
-subtype: armor
-tags: []
-slot: hands
+# slot: hands
+equipableSlots: [on-hands]
 acBonus: 1
 maxDex: 3

@@ -1,7 +1,6 @@
 name: Helmet
 inherits: item
-subtype: armor
-tags: []
-slot: head
+# slot: head
+equipableSlots: [on-head]
 acBonus: 2
 maxDex: 3

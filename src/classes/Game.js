@@ -75,7 +75,7 @@ module.exports = class Game {
     this.getNearbyEntitiesWithout('player').forEach(creature => {
       if (creature.hp > 0 && player.hp > 0) {
         const weapon = creature.wielding
-        while (creature.ap > 0 && creature.ap >= weapon.apCost) {
+        while (weapon && creature.ap > 0 && creature.ap >= weapon.apCost) {
           creature.target = 'player'
           creature.ap -= this.getApCost(creature)
           this.addAction({type: 'attack', entityId: creature.id, defenderId: creature.target})

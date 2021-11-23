@@ -1,6 +1,12 @@
-name: Exit
+name: Structure
 inherits: item
 tags: [structure]
+removeTags: [grabable]
 desc: 'Default structure description.'
-subtype: structure
-grabable: false
+remainsName: wreckage
+level: 100
+hitDie: 4
+baseAc: 15
+ap: 0
+apMax: 0
+apRegen: 0

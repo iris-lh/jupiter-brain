@@ -1,28 +1,4 @@
 name: Item
 inherits: entity
-type: item
-tags: [item]
+tags: [item, grabable]
 desc: 'Default item description.'
-grabable: true
-wearable: false
-wieldable: false
-usable: false
-onUse: null
-acBonus: 0
-maxDex: 0
-attackDesc: attack
-diceCount: 1
-diceSize: 4
-hitBonus: 0
-damBonus: 0
-hitAttribute: str
-damAttribute: str
-critRange: 20
-critMult: 2
-apCostBase: 6
-apCostMin: 2
-apThreshold: 10
-apAttributes:
-  - dex
-qualities: []
-level: 1

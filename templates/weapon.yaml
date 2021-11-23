@@ -1,23 +1,5 @@
 name: 'Weapon'
 inherits: item
-type: item
-subtype: weapon
-tags: [weapon]
+tags: [weapon, equipable]
 desc: 'Default weapon description.'
-attackDesc: 'hit'
-diceCount: 1
-diceSize: 4
-hitBonus: 0
-damBonus: 0
-hitAttribute: 'str'
-damAttribute: 'str'
-critRange: 20
-critMult: 2
-apCost: 3
-apCostBase: 6
-apCostMin: 3
-apThreshold: 0
-apAttributes: ['str']
-qualities: []
-equipable: true
-slot: 'wielding'
+equipableSlots: ['in-main-hand', 'in-off-hand', 'wielding']
