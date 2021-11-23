@@ -114,23 +114,42 @@ module.exports = class Renderer {
     return mapLines + lines.join('\r\n')
   }
 
+  _padLines(lines) {
+    var longest = lines[0]
+    lines.forEach(line => {
+      if (line.length > longest.length) {
+        longest = line
+      }
+    })
+    return lines.map(line => {
+      if (line.length < longest.length) {
+        line =  ' '.repeat(longest.length - line.length) + line
+      }
+      return line 
+    })
+  }
+
+  // TODO change _renderEquipped to new equipment slot system
   _renderEquipped(game) {
     const lines = []
     const player = game.getPlayer()
     lines.push('  EQUIPPED:')
-    lines.push(`    0. WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
-    lines.push(`    1.  ON HEAD: ${player.head ? player.head.name : 'Nothing'}`)
-    lines.push(`    2.  ON BODY: ${player.body ? player.body.name : 'Nothing'}`)
-    lines.push(`    3. ON HANDS: ${player.hands ? player.hands.name : 'Nothing'}`)
-    lines.push(`    4.  ON FEET: ${player.feet ? player.feet.name : 'Nothing'}`)
-    return lines.join('\r\n')
+    player.equipmentSlots.forEach(slot => {
+      const itemId = player.equipped[slot]
+      const item = game.getEntity(itemId)
+      slot = slot.toUpperCase().replaceAll('-',' ').replaceAll('hyphen', '-')
+      const line =`${slot}: ${item ? item.name : 'Nothing'}` 
+      lines.push(line)
+    })
+    return this._padLines(lines).join('\r\n')
   }
 
   _renderCarrying(game) {
     const lines = []
     const player = game.getPlayer()
     lines.push(`  CARRYING: ${player.inventory.length ? '' : 'Nothing'}`)
-    player.inventory.forEach((item, i) => {
+    player.inventory.forEach((itemId, i) => {
+      const item = game.getEntity(itemId)
       lines.push(`    ${i}. ${item.name}`)
     })
     return lines.join('\r\n')

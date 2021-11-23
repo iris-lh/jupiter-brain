@@ -156,6 +156,7 @@ module.exports = class Game {
     return _.filter(this.state.entities, entity => entity.id !== excludeId)
   }
 
+  // TODO change getAc to new equipment slot system
   getAc(creature) {
     var dexMod = helpers.calculateAttributeMod(creature.dex)
     var total = 0
@@ -177,7 +178,9 @@ module.exports = class Game {
   }
 
   getApCost(creature) {
-    const weapon = creature.wielding
+    const wieldingSlot = creature.wieldableSlots[0]
+    const weaponId = creature.equipped[wieldingSlot]
+    const weapon = this.getEntity(weaponId)
     var netCost = weapon.apCostBase
     var attributeTotal = 0
     weapon.apAttributes.forEach(attribute => {
@@ -212,8 +215,14 @@ module.exports = class Game {
   }
 
   getFirstValidTargetOf(targeterId) {
-    return _.find(this.getNearbyEntitiesWithout(targeterId), creature => {
-      return creature.hp > 0
+    return _.find(this.getNearbyEntitiesWithout(targeterId), entity => {
+      return entity.hp > 0
+    })
+  }
+
+  getFirstUsableItem(targeterId) {
+    return _.find(this.getNearbyEntitiesWithout(targeterId), entity => {
+      return typeof entity.onUse == 'function'
     })
   }
 
@@ -227,17 +236,46 @@ module.exports = class Game {
   creatureGrabItem(creatureId, itemId) {
     const creature = this.getEntity(creatureId)
     const item = this.getEntity(itemId)
-    creature.inventory.push(item)
-    this.deleteEntity(item.id)
+    if (!creature.inventory.includes(item.id)) {
+      creature.inventory.push(item.id)
+      item.carried = true
+      item.x = null
+      item.y = null
+    }
   }
 
   creatureDropItem(creatureId, index) {
     const creature = this.getEntity(creatureId)
-    const item = creature.inventory[index]
+    const itemId = creature.inventory[index]
+    const item = this.getEntity(itemId)
+    item.carried = false
     item.x = creature.x
     item.y = creature.y
-    this.state.entities.push(item)
-    creature.inventory = _.without(creature.inventory, item)
+    creature.inventory = _.without(creature.inventory, item.id)
+  }
+
+  creatureEquipItem(creatureId, itemId) {
+    const creature = this.getEntity(creatureId)
+    const newItem = this.getEntity(itemId)
+    const slotName = newItem.equipableSlots[0]
+    const oldItem = creature.equipped[slotName]
+    if (creature.equipmentSlots.includes(slotName)) {
+      if (oldItem) {
+        this.creatureGrabItem(creatureId, itemId)
+      }
+      creature.equipped[slotName] = newItem.id
+      creature.inventory = _.without(creature.inventory, newItem.id)
+    }
+  }
+
+  creatureUnequipSlot(creatureId, slotName) {
+    const creature = this.getEntity(creatureId)
+    const itemId = creature.equipped[slotName]
+    console.log(creatureId, slotName)
+    if (itemId) {
+      creature.inventory.push(itemId)
+      creature.equipped[slotName] = null
+    }
   }
 
   creatureDie(creatureId) {
@@ -274,7 +312,9 @@ module.exports = class Game {
   // CALCULATORS
 
   calculateHit(attacker) {
-    const weapon = attacker.wielding
+    const wieldingSlot = attacker.wieldableSlots[0]
+    const weaponId = attacker.equipped[wieldingSlot]
+    const weapon = this.getEntity(weaponId)
     
     const hitNatural = helpers.diceRoll(1, 20)
     const crit = hitNatural >= weapon.critRange
@@ -287,8 +327,9 @@ module.exports = class Game {
   }
   
   calculateDamage(attacker, didCrit) {
-    const weapon = attacker.wielding
-    // const weapon = this.getEntity(attacker.wielding)
+    const wieldingSlot = attacker.wieldableSlots[0]
+    const weaponId = attacker.equipped[wieldingSlot]
+    const weapon = this.getEntity(weaponId)
     const critMultiplier = didCrit ? weapon.critMult : 1
     const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker[weapon.damAttribute])
     const dice = helpers.diceRoll(weapon.diceCount, weapon.diceSize)
@@ -343,11 +384,12 @@ module.exports = class Game {
       helpers.assert(typeof attacker === 'object', `expected attacker to be string, got ${attacker}`)
       helpers.assert(typeof defender === 'object', `expected defender to be object, got ${defender}`)
   
-      const weapon = attacker.wielding
-      // const weapon = this.getEntity(attacker.wielding)
+      const wieldingSlot = attacker.wieldableSlots[0]
+      const weaponId = attacker.equipped[wieldingSlot]
+      const weapon = this.getEntity(weaponId)
       const hit = this.calculateHit(attacker, defender)
     
-      const damage = this.calculateDamage(attacker, hit.crit)
+      const damage = defender.tags.includes('indestructible') ? 0 : this.calculateDamage(attacker, hit.crit)
     
       const killed = (damage >= defender.hp) && !defender.dead
       const enemyIsKilled = killed && attackerId == 'player' ? ', killing it' : ''
@@ -458,35 +500,28 @@ module.exports = class Game {
     }
   }
 
+  // TODO change addEntity to new equipment slot system
   addEntity(templateName, x, y) {
     const entity = hydrateEntity(this.loader, templateName, x, y)
     this.state.entities.push(entity)
+
+    entity.hpMax = helpers.rollHealth(entity)
+    entity.hp = entity.hpMax
     
     if (entity.tags.includes('creature')) {
       this.state.creatureCount += 1
-      entity.hpMax = helpers.rollHealth(entity)
-      entity.hp = entity.hpMax
-      if (entity.wielding) {
-        const hydrated = hydrateEntity(this.loader, entity.wielding)
-        entity.wielding = hydrated
-      }
-      if (entity.head) {
-        const hydrated = hydrateEntity(this.loader, entity.head)
-        entity.head = hydrated
-      }
-      if (entity.body) {
-        const hydrated = hydrateEntity(this.loader, entity.body)
-        entity.body = hydrated
-      }
-      if (entity.hands) {
-        const hydrated = hydrateEntity(this.loader, entity.hands)
-        entity.hands = hydrated
-      }
-      if (entity.feet) {
-        const hydrated = hydrateEntity(this.loader, entity.feet)
-        entity.feet = hydrated
-      }
     }
+
+    entity.equipmentSlots.forEach(slotName => {
+      const templateName2 = entity.startingEquipment[slotName]
+      if (templateName2) {
+        const item = this.addEntity(templateName2, x, y)
+        entity.equipped[slotName] = item.id
+      } else {
+        entity.equipped[slotName] = null
+      }
+    })
+
     return entity
   }
 

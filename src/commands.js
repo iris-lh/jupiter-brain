@@ -137,7 +137,7 @@ module.exports = function commands(game) {
       U: {
         longForm: '(U)nequip',
         help: '',
-        handler: 'handleUnequipItem'
+        handler: 'handleUnequipSlot'
       },
       l: {
         longForm: '(l)ook',
