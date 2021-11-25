@@ -1,6 +1,7 @@
 name: MedHypo V
 inherits: consumable
-onUse: onUseMedHypo
-diceCount: 9
-diceSize: 4
+useScript: onUseMedHypo
+useDiceCount: 9
+useDiceSize: 4
 bonus: 9
+level: 5

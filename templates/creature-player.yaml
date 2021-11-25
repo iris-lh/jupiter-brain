@@ -1,17 +1,23 @@
 id: player
 name: Player
 inherits: creature
-tags: [player]
+tags: [player, learns, caster]
 hitDie: 8
 equipmentSlots: [
+  # GEAR
   in-main-hand, in-off-hand, on-head, on-body, on-hands, on-feet, 
-  eyes, ears, head, torso, skin, left-arm, right-arm, left-leg, right-leg
+  # CYBERNETICS
+  eyes, ears, head, torso, skin, left-arm, right-arm, left-leg, right-leg,
+  # MAGIC
+  spells
 ]
 wieldableSlots: [in-main-hand]
 startingEquipment: 
-    in-main-hand: weapon-knife
-apMax: 5
+  in-main-hand: weapon-knife
+  spells: spell-summon-entity
 ap: 5
+apMax: 5
 apRegen: 10
-exp: 0
-naniteCost: 10
+mp: 10
+mpMax: 10
+mpRegen: 1

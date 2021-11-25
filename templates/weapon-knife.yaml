@@ -1,20 +1,20 @@
 name: Knife
 inherits: weapon
-desc: 'A wickedly sharp Terran combat knife.'
+desc: A wickedly sharp Terran combat knife.
 slot: wielding
 attackDesc: stab
-diceCount: 1
-diceSize: 4
+useDiceCount: 1
+useDiceSize: 4
 hitBonus: 0
 damBonus: 0
 hitAttribute: dex
 damAttribute: dex
 critRange: 20
 critMult: 2
-apCostBase: 5
-apCostMin: 2
-apCostMax: 10
-apThreshold: 10
-apAttributes:
+useApCostBase: 5
+useApCostMin: 2
+useApCostMax: 10
+useApThreshold: 10
+useApAttributes:
   - dex
 qualities: []

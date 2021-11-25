@@ -1,5 +1,5 @@
 name: Armor
 inherits: item
 tags: [armor, equipable]
-desc: 'Default armor description.'
-maxDex: 5
+desc: Default armor description.
+equipMaxDex: 5

@@ -1,4 +1,4 @@
 name: Enhancement Station
 inherits: structure
-onUse: onUseEnhancementStation
-desc: 'This machine can be used to improve your capabilities.'
+useScript: onUseEnhancementStation
+desc: This machine can be used to improve your capabilities.

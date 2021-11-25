@@ -1,0 +1,72 @@
+# SYSTEM
+name: Entity
+tags: [entity]
+removeTags: []
+desc: Blank entity
+inherits: null
+x: null
+y: null
+carried: false
+spawn: []
+
+# SELF
+remainsName: remains
+level: 1
+hitDie: 4
+str: 10
+dex: 10
+con: 10
+int: 10
+wis: 10
+cha: 10
+target: null
+baseAc: 0
+ap: 0
+apMax: 0
+apRegen: 0
+mp: 0
+mpMax: 0
+mpRegen: 0
+inventory: []
+naniteValue: 0
+nanites: 0
+exp: 0
+naniteCost: 10
+qualities: []
+conditions: []
+equipmentSlots: []
+equipped: {}
+startingEquipment: {}
+wieldableSlots: [in-main-hand, wielding]
+
+# USAGE
+useFlavor: The entity has no effect.
+useFlavorSuccess: You summon an entity.
+useFlavorFailure: The summoning spell has no effect.
+useScript: null
+useDiceCount: 1
+useDiceSize: 4
+useApCost: 3
+useApCostBase: 6
+useApCostMin: 2
+useFpCost: 0
+useFpCostBase: 0
+useFpCostMin: 0
+useHpCost: 0
+useHpCostBase: 0
+useHpCostMin: 0
+useApThreshold: 0
+useApAttributes: [dex]
+useEffects: []
+
+# EQUIP
+equipableSlots: []
+equipAcBonus: 0
+equipMaxDex: 0
+attackDesc: attack
+hitBonus: 0
+damBonus: 0
+hitAttribute: str
+damAttribute: str
+critRange: 20
+critMult: 2

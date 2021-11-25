@@ -195,7 +195,7 @@ module.exports = {
       return
     }
 
-    player.ap -= game.getApCost(player)
+    player.ap -= game.getAttackApCost(player)
     game.addAction({type: 'attack', entityId: player.id, defenderId: target.id})
   },
 
@@ -212,7 +212,6 @@ module.exports = {
     }
     if (item && item.onUse) {
       const script = game.loader.loadScript(item.onUse)
-      game.addMessage(`You use the ${item.name}.`)
       script(game, helpers, item)
     }
     else {
@@ -281,8 +280,8 @@ module.exports = {
       }
   
       if (e.tags.includes('weapon')) {
-        game.addMessage(`DAM: ${e.diceCount}d${e.diceSize}+${e.damBonus} | HIT: +${e.hitBonus} | USES: ${e.hitAttribute}`)
-        game.addMessage(`CRIT: ${e.critRange}/x${e.critMult} | BASE AP COST: ${e.apCostBase}`)
+        game.addMessage(`DAM: ${e.useDiceCount}d${e.useDiceSize}+${e.damBonus} | HIT: +${e.hitBonus} | USES: ${e.hitAttribute}`)
+        game.addMessage(`CRIT: ${e.critRange}/x${e.critMult} | BASE AP COST: ${e.useApCostBase}`)
       }
     }
   },

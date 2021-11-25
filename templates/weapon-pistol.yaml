@@ -1,18 +1,18 @@
 name: Pistol
 inherits: weapon
 attackDesc: shoot
-diceCount: 2
-diceSize: 6
+useDiceCount: 2
+useDiceSize: 6
 hitBonus: 0
 damBonus: 0
 hitAttribute: dex
 damAttribute: dex
 critRange: 19
 critMult: 2
-apCostBase: 5
-apCostMin: 1
-apThreshold: 0
-apAttributes:
+useApCostBase: 5
+useApCostMin: 1
+useApThreshold: 0
+useApAttributes:
   - dex
 qualities:
   - kills stuff

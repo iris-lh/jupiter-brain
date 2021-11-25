@@ -2,7 +2,7 @@ name: Structure
 inherits: item
 tags: [structure]
 removeTags: [grabable]
-desc: 'Default structure description.'
+desc: Default structure description.
 remainsName: wreckage
 level: 100
 hitDie: 4

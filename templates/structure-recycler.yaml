@@ -1,4 +1,4 @@
 name: Recycler
 inherits: structure
-onUse: onUseRecycler
-desc: 'This machine can be used to recycle unwanted items into nanites.'
+useScript: onUseRecycler
+desc: This machine can be used to recycle unwanted items into nanites.

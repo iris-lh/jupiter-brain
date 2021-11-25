@@ -2,5 +2,5 @@ name: Helmet
 inherits: item
 # slot: head
 equipableSlots: [on-head]
-acBonus: 2
-maxDex: 3
+equipAcBonus: 2
+equipMaxDex: 3

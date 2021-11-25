@@ -1,7 +1,7 @@
 name: Exit
 inherits: room-chamber
 desc: You are near an exit.
-icon: 'E'
+icon: E
 entities: [structure-exit]
 loot:
   [default, 0.2]

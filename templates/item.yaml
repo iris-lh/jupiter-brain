@@ -1,4 +1,4 @@
 name: Item
-inherits: entity
+inherits: _entity
 tags: [item, grabable]
-desc: 'Default item description.'
+desc: Default item description.

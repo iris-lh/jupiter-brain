@@ -1,0 +1,9 @@
+name: Spell
+inherits: _entity
+tags: [spell, equipable, usable, indestructible]
+desc: Default spell description.
+useFlavor: The spell has no effect.
+equipableSlots: [spells]
+useScript: onUseSpell
+useFpCost: 1
+useApCost: 6

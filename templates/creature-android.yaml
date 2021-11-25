@@ -1,6 +1,6 @@
 name: Android
 inherits: creature
-desc: 'Once a crowning achievement of Terran biotech, this abandoned automaton has seen better days. Chunks of its body are missing and black fluid drips from tubes that hang from its body.'
+desc: Once a crowning achievement of Terran biotech, this abandoned automaton has seen better days. Chunks of its body are missing and black fluid drips from tubes that hang from its body.
 level: 2
 hitDie: 6
 str: 8

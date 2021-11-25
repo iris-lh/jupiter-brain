@@ -1,0 +1,8 @@
+name: Heal Self
+inherits: spell
+desc: Heals your wounds.
+useFlavorSuccess: You feel better as your body is repaired.
+useFlavorFailure: The healing spell has no effect.
+useEffects: [heal-self]
+useApCost: 5
+useFpCost: 5

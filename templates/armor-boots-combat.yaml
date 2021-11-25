@@ -2,5 +2,5 @@ name: Combat Boots
 inherits: item
 # slot: feet
 equipableSlots: [on-feet]
-acBonus: 1
-maxDex: 3
+equipAcBonus: 1
+equipMaxDex: 3

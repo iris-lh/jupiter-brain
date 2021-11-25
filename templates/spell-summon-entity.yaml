@@ -1,0 +1,9 @@
+name: Summon Entity
+inherits: spell
+desc: Summon an entity.
+useFlavorSuccess: You summon an entity.
+useFlavorFailure: The summoning spell has no effect.
+useEffects: [spawn]
+useFpCost: 5
+useApCost: 5
+inventory: [_entity]

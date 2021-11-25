@@ -1,17 +1,17 @@
 name: Nanite Swarm
 inherits: weapon
 attackDesc: engulf
-diceCount: 2
-diceSize: 4
+useDiceCount: 2
+useDiceSize: 4
 hitBonus: 0
 damBonus: 0
 hitAttribute: int
 damAttribute: int
 critRange: 20
 critMult: 2
-apCostBase: 6
-apCostMin: 2
-apThreshold: 10
-apAttributes:
+useApCostBase: 6
+useApCostMin: 2
+useApThreshold: 10
+useApAttributes:
   - dex
 qualities: []

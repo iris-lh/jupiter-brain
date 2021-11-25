@@ -1,5 +1,5 @@
 name: Creature
-inherits: entity
+inherits: _entity
 tags: [creature]
-desc: 'Default creature description.'
+desc: Default creature description.
 remainsName: corpse

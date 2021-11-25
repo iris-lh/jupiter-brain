@@ -1,5 +1,5 @@
 name: Room
-inherits: entity
+inherits: _entity
 type: room
 desc: You are in a plain room.
 explored: false

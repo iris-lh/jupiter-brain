@@ -73,19 +73,22 @@ module.exports = class Game {
 
   tick() {
     const player = this.getPlayer()
-    this.getNearbyEntitiesWithout('player').forEach(creature => {
-      if (creature.hp > 0 && player.hp > 0) {
-        const weapon = creature.wielding
-        while (weapon && creature.ap > 0 && creature.ap >= weapon.apCost) {
-          creature.target = 'player'
-          creature.ap -= this.getApCost(creature)
-          this.addAction({type: 'attack', entityId: creature.id, defenderId: creature.target})
+    this.getNearbyEntitiesWithout('player').forEach(entity => {
+      if (entity.hp > 0 && player.hp > 0) {
+        const weapon = entity.wielding
+        while (weapon && entity.ap > 0 && entity.ap >= weapon.useApCost) {
+          entity.target = 'player'
+          helpers.adjustAp(entity, -this.getAttackApCost(entity))
+          this.addAction({type: 'attack', entityId: entity.id, defenderId: entity.target})
         }
       }
-      creature.ap += creature.apRegen
-      helpers.regenAp(creature)
+      // helpers.regenHp(entity)
+      helpers.regenFp(entity)
+      helpers.regenAp(entity)
     })
-  
+    
+    helpers.regenHp(player)
+    helpers.regenFp(player)
     helpers.regenAp(player)
   
     if (player.ap >= 0) {
@@ -163,35 +166,35 @@ module.exports = class Game {
     var total = 0
     total += creature.baseAc
     if (creature.head) {
-      total += creature.head.acBonus
+      total += creature.head.equipAcBonus
     }
     if (creature.body) {
-      total += creature.body.acBonus
+      total += creature.body.equipAcBonus
     }
     if (creature.hands) {
-      total += creature.hands.acBonus
+      total += creature.hands.equipAcBonus
     }
     if (creature.feet) {
-      total += creature.feet.acBonus
+      total += creature.feet.equipAcBonus
     }
     total += dexMod
     return total
   }
 
-  getApCost(creature) {
+  getAttackApCost(creature) {
     const wieldingSlot = creature.wieldableSlots[0]
     const weaponId = creature.equipped[wieldingSlot]
     const weapon = this.getEntity(weaponId)
-    var netCost = weapon.apCostBase
+    var netCost = weapon.useApCostBase
     var attributeTotal = 0
-    weapon.apAttributes.forEach(attribute => {
+    weapon.useApAttributes.forEach(attribute => {
       attributeTotal += this.getAttributeMod(creature, attribute)
     })
-    attributeTotal = Math.floor(attributeTotal/weapon.apAttributes.length)
+    attributeTotal = Math.floor(attributeTotal/weapon.useApAttributes.length)
     
     netCost -= attributeTotal
-    if (netCost < weapon.apCostMin) {netCost = weapon.apCostMin}
-    if (netCost > weapon.apCostMax) {netCost = weapon.apCostMax}
+    if (netCost < weapon.useApCostMin) {netCost = weapon.useApCostMin}
+    if (netCost > weapon.useApCostMax) {netCost = weapon.useApCostMax}
     
     return netCost
   }
@@ -333,7 +336,7 @@ module.exports = class Game {
     const weapon = this.getEntity(weaponId)
     const critMultiplier = didCrit ? weapon.critMult : 1
     const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker[weapon.damAttribute])
-    const dice = helpers.diceRoll(weapon.diceCount, weapon.diceSize)
+    const dice = helpers.diceRoll(weapon.useDiceCount, weapon.useDiceSize)
     let damage = 
       (dice + damageBonus) 
       * critMultiplier
@@ -402,19 +405,16 @@ module.exports = class Game {
         : `The ${color.red(attacker.name)} misses (${hit.roll}) you.`
       
       if (hit.roll > this.getAc(defender)) {
-        this.addMessage(hitMsg + ` ${this.getApCost(attacker)} ap`)
-        if (defender.hp - damage > 0) {
-          defender.hp -= damage
-        } else {
-          defender.hp = 0
+        this.addMessage(hitMsg + ` ${this.getAttackApCost(attacker)} ap`)
+        helpers.adjustHp(defender, -damage)
+        if (defender.hp <= 0) {
           this.creatureDie(defenderId)
           if (attackerId == 'player') {
-            // attacker.nanites += defender.naniteValue
             attacker.nanites += Math.floor(2 * 1.618**defender.level-1)
           }
         }
       } else {
-        this.addMessage(missMsg + ` ${this.getApCost(attacker)} ap`)
+        this.addMessage(missMsg + ` ${this.getAttackApCost(attacker)} ap`)
       }
     }
   }

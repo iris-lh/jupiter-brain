@@ -1,7 +1,7 @@
 name: StimHypo
 inherits: consumable
-onUse: onUseStimHypo
-diceCount: 2
-diceSize: 4
+useScript: onUseStimHypo
+useDiceCount: 2
+useDiceSize: 4
 bonus: 2
-apCostBase: 0
+useApCostBase: 0

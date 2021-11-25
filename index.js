@@ -5,6 +5,7 @@ const Game = require('./src/classes/Game')
 const Renderer = require('./src/classes/Renderer')
 
 const game = new Game()
+
 const renderer = new Renderer(game)
 
 var term = new xterm.Terminal({cols: 90, rows:30, scrollback: 0});

@@ -40,6 +40,12 @@ const helpers = {
     return result
   },
 
+  clamp(n, min, max) {
+    if (n < min) {n = min}
+    if (n > max) {n = max}
+    return n
+  },
+
   mergeWeights(tables) {
     const merged = {}
     for (var i=0; i < tables.length; i++) {
@@ -67,33 +73,59 @@ const helpers = {
   },
 
   rollHealth(creature) {
+    var hp = 0
     if (creature.id == 'player') {
-      return ( creature.hitDie + creature.level * this.calculateAttributeMod(creature.con) )
+      hp = creature.hitDie + this.calculateAttributeMod(creature.con) * creature.level
     } else {
-      var hp = this.diceRoll(creature.level, creature.hitDie)
-      if (hp < creature.level * creature.hitDie / 2) {hp = creature.level * creature.hitDie / 2}
+      var roll = this.diceRoll(creature.level, creature.hitDie)
+      if (roll < creature.level * creature.hitDie / 2) {
+        roll = creature.level * creature.hitDie / 2
+      }
+      hp += roll
       hp +=  creature.level * this.calculateAttributeMod(creature.con)
-      return hp
     }
+    return Math.floor(hp)
   },
 
   calculateAttributeMod: function(n) {
     return Math.floor((n - 10))
   },
 
-  deductAp: function(creature, amount) {
-    creature.ap -= amount 
-    if (creature.ap < 0) {
-      creature.ap = 0
-    }
+  // HP
+
+  adjustHp(creature, amount) {
+    creature.hp = this.clamp(creature.hp + amount, 0, creature.hpMax)
+  },
+
+  regenHp: function(creature) {
+    const amount = (Math.floor(creature.hitDie / 2 ) + this.calculateAttributeMod(creature.con)) * creature.level
+    this.adjustFp(creature, amount)
+  },
+
+  // FP
+
+  adjustFp(creature, amount) {
+    creature.fp = this.clamp(creature.fp + amount, 0, creature.fpMax)
+  },
+
+  regenFp: function(creature) {
+    this.adjustFp(creature, creature.fpRegen)
+  },
+
+  // AP
+
+  adjustAp(creature, amount) {
+    creature.ap += amount
   },
 
   regenAp: function(creature) {
-    creature.ap += creature.apRegen
-    if (creature.ap > creature.apMax) {
-      creature.ap = creature.apMax
+    if (creature.ap < creature.apMax) {
+      this.adjustAp(creature, creature.apRegen)
+      if (creature.ap > creature.apMax) {
+        creature.ap = creature.apMax
+      }
     }
-  }
+  },
 }
 
 module.exports = helpers

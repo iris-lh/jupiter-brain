@@ -2,5 +2,5 @@ name: Ballistic Vest
 inherits: item
 # slot: body
 equipableSlots: [on-body]
-acBonus: 2
-maxDex: 4
+equipAcBonus: 2
+equipMaxDex: 4
