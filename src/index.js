@@ -1,8 +1,8 @@
 const xterm = require('xterm')
 const xtermAddonFit = require('xterm-addon-fit')
 
-const Game = require('./src/classes/Game')
-const Renderer = require('./src/classes/Renderer')
+const Game = require('./classes/Game')
+const Renderer = require('./classes/Renderer')
 
 const game = new Game()
 

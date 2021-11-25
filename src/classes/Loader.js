@@ -1,24 +1,47 @@
-const _ = require('lodash')
+const yaml = require('yaml')
+const fs = require('fs')
+const { request } = require('http')
 
 module.exports = class Loader {
   constructor() {
-    this.templatesPath = './templates/'
-    this.scriptsPath = '../../scripts/'
-    this.templates = require('../../templates.js')
-    this.scripts = require('../../scripts.js')
+    this.templatesPath = 'templates'
+    this.scriptsPath = 'scripts'
+
+    this.templateCache = {}
+    this.scriptCache = {}
   }
 
-  loadTemplate(name) {
-    if (!this.templates[name]) {
-      throw `Template not found: ${name}`
+  loadText(url) {
+    const request = new XMLHttpRequest
+    request.open("GET", url, false);
+    request.onerror = e => {
+      console.error(xhr.statusText);
     }
-    return this.templates[name]
+    request.send(null)
+    return request.responseText
   }
 
-  loadScript(name) {
-    if (!this.scripts[name]) {
-      throw `Script not found: ${name}`
-    }
-    return this.scripts[name]
+  loadTemplate(templateName) {
+    if (this.templateCache[templateName]) return this.templateCache[templateName]
+
+    const url = `${this.templatesPath}/${templateName}.yaml`
+
+    const template = yaml.parse(this.loadText(url))
+
+    this.templateCache[templateName] = template
+
+    return template
+  }
+
+  loadScript(scriptName) {
+    if (this.scriptCache[scriptName]) return this.scriptCache[scriptName]
+
+    const url = `${this.scriptsPath}/${scriptName}.js`
+
+    const scriptText = this.loadText(url)
+
+    this.scriptCache[scriptName] = template
+    
+    return script
   }
 }

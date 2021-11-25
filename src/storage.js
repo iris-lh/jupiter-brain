@@ -10,7 +10,6 @@ module.exports = {
     localStorage.setItem(index, file)
   },
 
-
   load: function(index) {
     return JSON.parse(localStorage.getItem(index))
   },
