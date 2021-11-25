@@ -98,7 +98,8 @@ const helpers = {
   },
 
   regenHp: function(creature) {
-    const amount = (Math.floor(creature.hitDie / 2 ) + this.calculateAttributeMod(creature.con)) * creature.level
+    // const amount = (Math.floor(creature.hitDie / 2 ) + this.calculateAttributeMod(creature.con)) * creature.level
+    const amount = Math.ceil(creature.hp * 0.1)
     this.adjustHp(creature, amount)
   },
 

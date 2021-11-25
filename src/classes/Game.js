@@ -73,24 +73,25 @@ module.exports = class Game {
 
   tick() {
     const player = this.getPlayer()
-    this.getNearbyEntitiesWithout('player').forEach(entity => {
+    this.getEntitiesAt(player.x, player.y).forEach(entity => {
+      console.log(this.getEntitiesAt(player.x, player.y))
       if (entity.hp > 0 && player.hp > 0) {
-        const weapon = entity.wielding
-        while (weapon && entity.ap > 0 && entity.ap >= weapon.useApCost) {
-          entity.target = 'player'
-          helpers.adjustAp(entity, -this.getAttackApCost(entity))
-          this.addAction({type: 'attack', entityId: entity.id, defenderId: entity.target})
+        if (entity.id !== 'player') {
+          const weaponId = entity.equipped[entity.wieldableSlots[0]]
+          const weapon = this.getEntity(weaponId)
+          console.log(entity.name, weapon.name)
+          while (weapon && entity.ap > 0 && entity.ap >= weapon.useApCost) {
+            entity.target = 'player'
+            helpers.adjustAp(entity, -this.getAttackApCost(entity))
+            this.addAction({type: 'attack', entityId: entity.id, defenderId: entity.target})
+          }
         }
       }
-      // helpers.regenHp(entity)
-      helpers.regenFp(entity)
-      helpers.regenAp(entity)
+      if ( entity.tags.includes('regens-hp') ) helpers.regenHp(entity)
+      if ( entity.tags.includes('regens-fp') ) helpers.regenFp(entity)
+      if ( entity.tags.includes('regens-ap') ) helpers.regenAp(entity)
     })
     
-    helpers.regenHp(player)
-    helpers.regenFp(player)
-    helpers.regenAp(player)
-  
     if (player.ap >= 0) {
       this.state.pass = false
     }

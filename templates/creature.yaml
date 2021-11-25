@@ -1,5 +1,5 @@
 name: Creature
 inherits: _entity
-tags: [creature]
+tags: [creature, regens-fp, regens-ap]
 desc: Default creature description.
 remainsName: corpse
