@@ -200,7 +200,6 @@ module.exports = {
   },
 
   handleUse(game,commandSuffix = 0){
-    
     const index = commandSuffix ? parseInt(commandSuffix) : 0
     const player = game.getPlayer()
     const context = game.state.uiContext
@@ -210,8 +209,9 @@ module.exports = {
     } else if (context === 'map') {
       item = game.getNearbyEntitiesWithout('player')[index]
     }
-    if (item && item.onUse) {
-      const script = game.loader.loadScript(item.onUse)
+    if (item && item.useScript) {
+      const script = game.loader.loadScript(item.useScript)
+      console.log(script)
       script(game, helpers, item)
     }
     else {

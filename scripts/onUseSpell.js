@@ -1,10 +1,10 @@
-module.exports = function onUseMedHypo(game, helpers, spell) {
+module.exports = function onUseSpell(game, helpers, spell) {
   // TODO get user entity rather than player
   const caster = game.getPlayer()
   const target = game.getTargetOf(caster.id)
   var success = true
 
-  if ( !checkFp(caster, spell) ) return false
+  if ( !enoughFp(game, caster, spell) ) { return false }
 
   spell.useEffects.forEach(effectName => {
     switch (effectName) {
@@ -18,26 +18,22 @@ module.exports = function onUseMedHypo(game, helpers, spell) {
   game.addMessage(`You cast ${spell.name}.`)
   const flavor = success ? spell.useFlavorSuccess : spell.useFlavorFailure
   game.addMessage(flavor)
-  caster.ap -= spell.useApCost
   helpers.adjustAp(caster, -spell.useApCost)
-  const mpCost = caster.fp > spell.useFpCost ? caster.fp - spell.useFpCost : 0
-  helpers.adjustAp(caster, -mpCost)
+  helpers.adjustFp(caster, -spell.useFpCost)
 }
 
-function casterIsPlayer(caster) {
-  return (caster.tags.includes('player'))
-}
-
-function checkFp(caster, spell) {
+function enoughFp(game, caster, spell) {
   if (caster.fp < spell.useFpCost) {
-    if ( casterIsPlayer() ) game.addMessage('Not enough FP.')
+    if ( caster.tags.includes('player') ) game.addMessage('Not enough FP.')
     return false
   }
+
+  return true
 }
 
-function checkTarget(target) {
+function checkTarget(game, target) {
   if (!target) {
-    if ( casterIsPlayer() ) game.addMessage('The spell requires a target.')
+    if ( caster.tags.includes('player') ) game.addMessage('The spell requires a target.')
     return false
   }
 }
@@ -45,7 +41,7 @@ function checkTarget(target) {
 function effectHeal(game, helpers, spell, caster, target) {
   var success = true
 
-  if ( !checkTarget(target) ) return false
+  if ( !checkTarget(game, target) ) return false
 
   const useDiceCount = spell.level + Math.floor(spell.level / 2)
   const useDiceSize = 4
@@ -65,7 +61,7 @@ function effectHeal(game, helpers, spell, caster, target) {
 function effectHarm(game, helpers, spell, caster, target) {
   var success = true
 
-  if (!checkTarget(target)) return false
+  if (!checkTarget(game, target)) return false
 
   const useDiceCount = spell.level + Math.floor(spell.level / 2)
   const useDiceSize = 4

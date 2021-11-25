@@ -18,6 +18,6 @@ startingEquipment:
 ap: 5
 apMax: 5
 apRegen: 10
-mp: 10
-mpMax: 10
-mpRegen: 1
+fp: 10
+fpMax: 10
+fpRegen: 1

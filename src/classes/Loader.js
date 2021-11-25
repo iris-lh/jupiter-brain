@@ -38,10 +38,11 @@ module.exports = class Loader {
 
     const url = `${this.scriptsPath}/${scriptName}.js`
 
-    const scriptText = this.loadText(url)
+    const scriptString = this.loadText(url)
+    const script = eval(scriptString)
 
-    this.scriptCache[scriptName] = template
-    
+    this.scriptCache[scriptName] = script
+
     return script
   }
 }

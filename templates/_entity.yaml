@@ -24,9 +24,9 @@ baseAc: 0
 ap: 0
 apMax: 0
 apRegen: 0
-mp: 0
-mpMax: 0
-mpRegen: 0
+fp: 0
+fpMax: 0
+fpRegen: 0
 inventory: []
 naniteValue: 0
 nanites: 0
