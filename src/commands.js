@@ -30,6 +30,18 @@ module.exports = function commands(game) {
     handler: 'handleContextSystem'
   }
 
+  const commandLook = {
+    longForm: '(l)ook',
+    help: '',
+    handler: 'handleLook'
+  }
+
+  const commandUse = {
+    longForm: '(u)se',
+    help: '',
+    handler: 'handleUse'
+  }
+
   const commands = {
     system: {
       m: contextMap,
@@ -95,21 +107,13 @@ module.exports = function commands(game) {
         help: '',
         handler: 'handleAttack'
       },
-      l: {
-        longForm: '(l)ook',
-        help: '',
-        handler: 'handleLook'
-      },
+      l: commandlook,
       g: {
         longForm: '(g)rab item',
         help: '',
         handler: 'handleGrabItem'
       },
-      u: {
-        longForm: '(u)se',
-        help: '',
-        handler: 'handleUse'
-      }
+      u: commandUse
     },
     inventory: {
       // context switchers
@@ -129,21 +133,13 @@ module.exports = function commands(game) {
         help: '',
         handler: 'handleEquipItem'
       },
-      u: {
-        longForm: '(u)se',
-        help: '',
-        handler: 'handleUse'
-      },
+      u: commandUse,
       U: {
         longForm: '(U)nequip',
         help: '',
         handler: 'handleUnequipSlot'
       },
-      l: {
-        longForm: '(l)ook',
-        help: '',
-        handler: 'handleLook'
-      },
+      l: commandLook,
     },
     characterSheet: {
       // context switchers

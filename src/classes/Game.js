@@ -520,6 +520,16 @@ module.exports = class Game {
       }
     })
 
+    entity.equipmentSlots.forEach(template => {
+      const templateName2 = entity.startingEquipment[slotName]
+      if (templateName2) {
+        const item = this.addEntity(templateName2, x, y)
+        entity.equipped[slotName] = item.id
+      } else {
+        entity.equipped[slotName] = null
+      }
+    })
+
     return entity
   }
 

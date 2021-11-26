@@ -1,5 +1,5 @@
 name: Weapon
 inherits: item
-tags: [weapon, equipable]
+tags: [gear, weapon, equipable]
 desc: Default weapon description.
 equipableSlots: [in-main-hand, in-off-hand, wielding]

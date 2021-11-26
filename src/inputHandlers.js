@@ -203,13 +203,18 @@ module.exports = {
     const index = commandSuffix ? parseInt(commandSuffix) : 0
     const player = game.getPlayer()
     const context = game.state.uiContext
-    let item
+    let itemId
+    console.log(player.inventory.map(id => game.getEntity(id)))
+
     if (context === 'inventory') {
-      item = player.inventory[index]
+      itemId = player.inventory[index]
     } else if (context === 'map') {
-      item = game.getNearbyEntitiesWithout('player')[index]
+      itemId = game.getNearbyEntitiesWithout('player')[index]
     }
-    if (item && item.useScript) {
+
+    const item = game.getEntity(itemId)
+
+    if (item && item.tags.includes('usable') && item.useScript) {
       const script = game.loader.loadScript(item.useScript)
       console.log(script)
       script(game, helpers, item)

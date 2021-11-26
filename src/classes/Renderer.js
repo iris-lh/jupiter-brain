@@ -144,10 +144,10 @@ module.exports = class Renderer {
     return this._padLines(lines).join('\r\n')
   }
 
-  _renderCarrying(game) {
+  _renderInventory(game) {
     const lines = []
     const player = game.getPlayer()
-    lines.push(`  CARRYING: ${player.inventory.length ? '' : 'Nothing'}`)
+    lines.push(`  INVENTORY: ${player.inventory.length ? '' : 'Nothing'}`)
     player.inventory.forEach((itemId, i) => {
       const item = game.getEntity(itemId)
       lines.push(`    ${i}. ${item.name}`)
@@ -155,13 +155,21 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
+  _renderCybernetics(game) {
+    const lines = []
+    const player = game.getPlayer()
+    lines.push(`  CYBERNETICS: ${player.inventory.length ? '' : 'Nothing'}`)
+    player.equipped.forOwn((itemId, i) => {
+      const item = game.getEntity(itemId)
+      if (!item.tags.includes('cybernetics'))
+      lines.push(`    ${i}. ${item.name}`)
+    })
+    return lines.join('\r\n')
+  }
+
   _renderContextInventory(game) {
     const lines = []
-    lines.push('INVENTORY')
-    lines.push('')
-    lines.push(this._renderEquipped(game))
-    lines.push('')
-    lines.push(this._renderCarrying(game))
+    lines.push(this._renderInventory(game))
     lines.push('')
     if (game.state.messages.length) {
       lines.push(game.state.messages.join('\r\n'))
@@ -169,6 +177,34 @@ module.exports = class Renderer {
     }
     lines.push(this._renderSelfLine(game))
     return lines.join('\r\n')
+  }
+
+  _renderContextEquipment(game) {
+    const lines = []
+    lines.push(this._renderEquipped(game))
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderSelfLine(game))
+    return lines.join('\r\n')
+  }
+
+  _renderContextCybernetics(game) {
+    const lines = []
+    lines.push(this._renderCybernetics(game))
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderSelfLine(game))
+    return lines.join('\r\n')
+  }
+
+  _renderContextSpells(game) {
+
   }
 
   _renderContextRecycler(game) {
@@ -304,6 +340,15 @@ module.exports = class Renderer {
         lines.push(this._renderContextMap(game))
         break;
       case 'inventory':
+        lines.push(this._renderContextInventory(game))
+        break;
+      case 'equipment':
+        lines.push(this._renderContextInventory(game))
+        break;
+      case 'cybernetics':
+        lines.push(this._renderContextInventory(game))
+        break;
+      case 'spells':
         lines.push(this._renderContextInventory(game))
         break;
       case 'characterSheet':

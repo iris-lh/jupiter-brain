@@ -15,6 +15,7 @@ wieldableSlots: [in-main-hand]
 startingEquipment: 
   in-main-hand: weapon-knife
   spells: spell-summon-entity
+inventory: [consumable-medhypo-i]
 ap: 5
 apMax: 5
 apRegen: 10

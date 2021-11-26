@@ -1,6 +1,4 @@
 const yaml = require('yaml')
-const fs = require('fs')
-const { request } = require('http')
 
 module.exports = class Loader {
   constructor() {
