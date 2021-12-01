@@ -2,9 +2,24 @@ const xterm = require('xterm')
 const xtermAddonFit = require('xterm-addon-fit')
 
 const Game = require('./classes/Game')
+const Menu = require('./classes/Menu')
 const Renderer = require('./classes/Renderer')
+const UI = require('./classes/Ui')
 
 const game = new Game()
+
+const ui = new UI(game)
+ui.addMenu(new Menu(
+  'test-menu', 
+  'Test Menu',
+  0, 2,
+  [
+    {text: 'Status', event: {name: 'uiSetContext', params: 'status'}},
+    {text: 'Inventory', event: {name: 'uiSetContext', params: 'inventory'}},
+    {text: 'Equipment', event: {name: 'uiSetContext', params: 'equipment'}},
+  ]
+))
+ui.setActiveMenu('test-menu')
 
 const renderer = new Renderer(game)
 
@@ -13,7 +28,7 @@ const fitAddon = new xtermAddonFit.FitAddon();
 term.loadAddon(fitAddon)
 term.setOption('fontSize', '22')
 term.open(document.getElementById('terminal'));
-term.write(renderer.render(game))
+term.write(renderer.render(game, ui))
 
 let input = ''
 
@@ -25,17 +40,22 @@ window.onresize = e => {
 }
 
 term.onKey(e => {
+  const menu = ui.getActiveMenu()
   if (e.key === '\r') {
     term.clear()
-    game.loop(input)
+
+    if (menu) console.log(menu.getSelected())
+    else game.loop(input)
+
     input = ''
-    term.write('\r' + renderer.render(game))
-  } 
-  else if (e.domEvent.key === 'Escape' && game.state.uiContext !== 'map') {
+    term.write('\r' + renderer.render(game, ui))
+  }
+  else if (e.domEvent.key === 'Escape') {
     term.clear()
-    game.loop('m')
+    if (menu) ui.clearActiveMenu()
+    else ui.setActiveMenu('test-menu')
     input = ''
-    term.write('\r' + renderer.render(game))
+    term.write('\r' + renderer.render(game, ui))
   } 
   else if (e.domEvent.key === 'Backspace') {
     if (input.length) {
@@ -47,23 +67,27 @@ term.onKey(e => {
   } 
   else if (e.domEvent.key === 'ArrowUp') {
     term.clear()
-    game.loop('n')
-    term.write('\r' + renderer.render(game))
+    if (menu) ui.moveCursor(0, -1)
+    else game.loop('n')
+    term.write('\r' + renderer.render(game, ui))
   }
   else if (e.domEvent.key === 'ArrowDown') {
     term.clear()
-    game.loop('s')
-    term.write('\r' + renderer.render(game))
+    if (menu) ui.moveCursor(0, 1)
+    else game.loop('s')
+    term.write('\r' + renderer.render(game, ui))
   }
   else if (e.domEvent.key === 'ArrowLeft') {
     term.clear()
-    game.loop('w')
-    term.write('\r' + renderer.render(game))
+    if (menu) ui.moveCursor(-1, 0)
+    else game.loop('w')
+    term.write('\r' + renderer.render(game, ui))
   }
   else if (e.domEvent.key === 'ArrowRight') {
     term.clear()
-    game.loop('e')
-    term.write('\r' + renderer.render(game))
+    if (menu) ui.moveCursor(1, 0)
+    else game.loop('e')
+    term.write('\r' + renderer.render(game, ui))
   }
   else {
     input += e.key

@@ -331,44 +331,60 @@ module.exports = class Renderer {
     return targetLine
   }
 
-  render(game) {
-    const lines = []
+  _renderMenu(game, ui, lines, x = 0, y = 0) {
+    const menu = ui.getActiveMenu()
+    menu.items.forEach((item, i) => {
+      const marker = i == menu.cursorPos.y ? '> ' : '  '
+      lines[i+y] = `${marker}${i}. ${item.text}`
+    })
+
+    return lines.join('\r\n')
+  }
+
+  render(game, ui) {
+    var lines = []
     const prompt = '> '
 
     switch(game.state.uiContext) {
       case 'map':
-        lines.push(this._renderContextMap(game))
+        lines.push(this._renderContextMap(game, ui))
         break;
       case 'inventory':
-        lines.push(this._renderContextInventory(game))
+        lines.push(this._renderContextInventory(game, ui))
         break;
       case 'equipment':
-        lines.push(this._renderContextInventory(game))
+        lines.push(this._renderContextInventory(game, ui))
         break;
       case 'cybernetics':
-        lines.push(this._renderContextInventory(game))
+        lines.push(this._renderContextInventory(game, ui))
         break;
       case 'spells':
-        lines.push(this._renderContextInventory(game))
+        lines.push(this._renderContextInventory(game, ui))
         break;
       case 'characterSheet':
-        lines.push(this._renderContextCharacterSheet(game))
+        lines.push(this._renderContextCharacterSheet(game, ui))
         break;
       case 'messageHistory':
-        lines.push(this._renderContextMessageHistory(game))
+        lines.push(this._renderContextMessageHistory(game, ui))
         break;
       case 'system':
-        lines.push(this._renderContextSystem(game))
+        lines.push(this._renderContextSystem(game, ui))
         break;
       case 'enhancementStation':
-        lines.push(this._renderContextEnhancementStation(game))
+        lines.push(this._renderContextEnhancementStation(game, ui))
         break;
       case 'recycler':
-        lines.push(this._renderContextRecycler(game))
+        lines.push(this._renderContextRecycler(game, ui))
         break;
     }
 
-    lines.push(this._renderCommands(game))
+    const menu = ui.getActiveMenu()
+
+    if (menu) {
+      lines[0] = this._renderMenu(game, ui, lines[0].split('\r\n'), menu.x, menu.y)
+    }
+
+    lines.push(this._renderCommands(game, ui))
 
     lines.push(prompt)
 
