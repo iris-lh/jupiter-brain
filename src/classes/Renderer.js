@@ -39,12 +39,12 @@ module.exports = class Renderer {
     ]
     return lines.join('\r\n')
   }
-
+  
   _renderMap(game) {
     const wall = color.whiteBg(' ')
     const lines = []
     const player = game.getPlayer()
-    lines.push(`DEPTH: ${game.state.depth}                                         \r\n`)
+    lines.push(`DEPTH: ${game.state.depth}\r\n`)
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\r\n')
     for (var y=0; y<game.state.map.sizeY; y++) {
       lines.push(wall)

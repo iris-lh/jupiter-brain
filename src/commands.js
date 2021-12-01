@@ -107,7 +107,7 @@ module.exports = function commands(game) {
         help: '',
         handler: 'handleAttack'
       },
-      l: commandlook,
+      l: commandLook,
       g: {
         longForm: '(g)rab item',
         help: '',
