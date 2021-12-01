@@ -12,7 +12,7 @@ module.exports = class Renderer {
     lines.push(room.desc)
 
     game.getNearbyEntitiesWithout('player').forEach((entity, i) => {
-      if (!entity.stored) {
+      if (!entity.carried) {
         const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
         if (entity.tags.includes('creature')) {
           if (entity.hp > 0) {
@@ -28,20 +28,6 @@ module.exports = class Renderer {
   }
 
   _renderCommands(game) {
-    // const exits = game.getCurrentRoom().exits.map(exit => {
-    //   if (exit === 'n') {
-    //     return color.whiteBg(color.black('n')) + 'orth'
-    //   }
-    //   else if (exit === 's') {
-    //     return color.whiteBg(color.black('s')) + 'outh'
-    //   }
-    //   else if (exit === 'e') {
-    //     return color.whiteBg(color.black('e')) + 'ast'
-    //   }
-    //   else if (exit === 'w') {
-    //     return color.whiteBg(color.black('w')) + 'est'
-    //   }
-    // })
     const commands = []
     _.forOwn(game.commands[game.state.uiContext], (command, key) => {
       commands.push(command.longForm.replace(`(${key})`, color.whiteBg(color.black(key))))

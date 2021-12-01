@@ -29,7 +29,7 @@ module.exports = class Game {
       depth: 0,
       creatureCount: 0,
       itemCount: 0,
-      saveIndex: 0
+      saveIndex: 0,
     }
 
     this.state = save || this.defaultState
@@ -249,9 +249,8 @@ module.exports = class Game {
     }
   }
 
-  creatureDropItem(creatureId, index) {
+  creatureDropItem(creatureId, itemId) {
     const creature = this.getEntity(creatureId)
-    const itemId = creature.inventory[index]
     const item = this.getEntity(itemId)
     item.carried = false
     item.x = creature.x
@@ -511,23 +510,20 @@ module.exports = class Game {
     }
 
     entity.equipmentSlots.forEach(slotName => {
-      const templateName2 = entity.startingEquipment[slotName]
-      if (templateName2) {
-        const item = this.addEntity(templateName2, x, y)
+      const equipmentTemplateName = entity.startingEquipment[slotName]
+      if (equipmentTemplateName) {
+        const item = this.addEntity(equipmentTemplateName, x, y)
         entity.equipped[slotName] = item.id
+        item.carried = true
       } else {
         entity.equipped[slotName] = null
       }
     })
 
-    entity.equipmentSlots.forEach(template => {
-      const templateName2 = entity.startingEquipment[slotName]
-      if (templateName2) {
-        const item = this.addEntity(templateName2, x, y)
-        entity.equipped[slotName] = item.id
-      } else {
-        entity.equipped[slotName] = null
-      }
+    entity.inventory.forEach((inventoryTemplateName, i) => {
+      const item = this.addEntity(inventoryTemplateName, x, y)
+      entity.inventory[i] = item.id
+      item.carried = true
     })
 
     return entity

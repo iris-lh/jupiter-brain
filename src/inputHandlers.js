@@ -92,7 +92,8 @@ module.exports = {
     const index = parseInt(commandSuffix)
     const player = game.getPlayer()
     if (player.inventory[index]) {
-      game.creatureDropItem(player.id, index)
+      const item = player.inventory[index]
+      game.creatureDropItem(player.id, item.id)
     }
   },
 
