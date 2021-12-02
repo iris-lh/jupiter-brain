@@ -1,0 +1,8 @@
+id: ui-menu-system
+title: System
+items:
+  - 
+    text: Load
+    event:
+      name: testEvent
+      params: test

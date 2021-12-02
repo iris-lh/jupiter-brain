@@ -234,9 +234,8 @@ module.exports = class Renderer {
 
   _renderContextCharacterSheet(game) {
     const lines = []
-    const player = game.getPlayer()
 
-    lines.push('CHARACTER SHEET')
+    lines.push('STATUS')
     lines.push('')
     lines.push(this._renderPlayerStats(game))
     lines.push('')
@@ -317,60 +316,76 @@ module.exports = class Renderer {
     return targetLine
   }
 
-  _renderMenu(game, ui, lines, x = 0, y = 0) {
-    const menu = ui.getActiveMenu()
+  _renderMenu(game, lines, x = 0, y = 0) {
+    const newLines = []
+    const menu = UI.getActiveMenu()
+    let longest = menu.items.reduce((previous, current, index, array) => {
+      if (previous.text.length < current.text.length) return current
+      else return previous
+    }).text.length
+
+    const headerOffset = 5
+    // const header = menu.title.toUpperCase() + ' ' + '-'.repeat(longest + leftOffset - menu.title.length)
+    const header = color.black(color.whiteBg(`${' '.repeat(headerOffset + longest - menu.title.length)}${menu.title.toUpperCase()} `))
+    // const footer = ' ' + '-'.repeat(longest + leftOffset) + ''
+    
+    newLines.push(header)
     menu.items.forEach((item, i) => {
       const marker = i == menu.cursorPos.y ? '> ' : '  '
-      lines[i+y] = `${marker}${i}. ${item.text}`
+      newLines.push(color.grayBg(`${marker}${i}. ${' '.repeat(longest - item.text.length)}${item.text} `))
+    })
+    
+    // newLines.push(footer)
+    
+    newLines.forEach((newLine, i) => {
+      lines[i + y] = newLine
     })
 
     return lines.join('\r\n')
   }
 
-  render(game, ui) {
+  render(game) {
     var lines = []
     const prompt = '> '
-
-    switch(game.state.uiContext) {
+    switch(UI.context) {
       case 'map':
-        lines.push(this._renderContextMap(game, ui))
+        lines.push(this._renderContextMap(game))
         break;
       case 'inventory':
-        lines.push(this._renderContextInventory(game, ui))
+        lines.push(this._renderContextInventory(game))
         break;
       case 'equipment':
-        lines.push(this._renderContextInventory(game, ui))
+        lines.push(this._renderContextEquipment(game))
         break;
       case 'cybernetics':
-        lines.push(this._renderContextInventory(game, ui))
+        lines.push(this._renderContextInventory(game))
         break;
       case 'spells':
-        lines.push(this._renderContextInventory(game, ui))
+        lines.push(this._renderContextInventory(game))
         break;
       case 'characterSheet':
-        lines.push(this._renderContextCharacterSheet(game, ui))
+        lines.push(this._renderContextCharacterSheet(game))
         break;
       case 'messageHistory':
-        lines.push(this._renderContextMessageHistory(game, ui))
+        lines.push(this._renderContextMessageHistory(game))
         break;
       case 'system':
-        lines.push(this._renderContextSystem(game, ui))
+        lines.push(this._renderContextSystem(game))
         break;
       case 'enhancementStation':
-        lines.push(this._renderContextEnhancementStation(game, ui))
+        lines.push(this._renderContextEnhancementStation(game))
         break;
       case 'recycler':
-        lines.push(this._renderContextRecycler(game, ui))
+        lines.push(this._renderContextRecycler(game))
         break;
     }
 
-    const menu = ui.getActiveMenu()
-
+    const menu = UI.getActiveMenu()
     if (menu) {
-      lines[0] = this._renderMenu(game, ui, lines[0].split('\r\n'), menu.x, menu.y)
+      lines[0] = this._renderMenu(game, lines[0].split('\r\n'), menu.x, menu.y)
     }
 
-    lines.push(this._renderCommands(game, ui))
+    lines.push(this._renderCommands(game))
 
     lines.push(prompt)
 

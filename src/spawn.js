@@ -24,13 +24,13 @@ module.exports = {
     return result
   },
   
-  rollSpawns(loader, entity) {
+  rollSpawns(entity) {
     const results = []
     entity.spawn.forEach(entry => {
       const minTries = entry[0]
       const maxTries = entry[1]
       const tableName = entry[2]
-      const table = loader.loadTemplate(tableName)
+      const table = LOADER.loadTemplate(tableName)
       const dropChance = entry[3] || table.chance
       const tries = _.random(minTries, maxTries)
       for (var i=0; i<tries; i++) {

@@ -4,12 +4,12 @@ const helpers = require('./helpers')
 const storage = require('./storage')
 
 module.exports = {
-  handleContextMap(game) {game.switchUiContext('map')},
-  handleContextInventory(game) {game.switchUiContext('inventory')},
-  handleContextCharacterSheet(game) {game.switchUiContext('characterSheet')},
-  handleContextMessageHistory(game) {game.switchUiContext('messageHistory')},
-  handleContextDebug(game) {game.switchUiContext('debug')},
-  handleContextSystem(game) {game.switchUiContext('system')},
+  handleContextMap(game)            {EVENT.fire('uiSetContext', 'map')},
+  handleContextInventory(game)      {EVENT.fire('uiSetContext', 'inventory')},
+  handleContextCharacterSheet(game) {EVENT.fire('uiSetContext', 'characterSheet')},
+  handleContextMessageHistory(game) {EVENT.fire('uiSetContext', 'messageHistory')},
+  handleContextDebug(game)          {EVENT.fire('uiSetContext', 'debug')},
+  handleContextSystem(game)         {EVENT.fire('uiSetContext', 'system')},
 
   handleNewGame(game, commandSuffix) {
     game.state = _.merge({}, game.defaultState)
@@ -200,24 +200,14 @@ module.exports = {
     game.addAction({type: 'attack', entityId: player.id, defenderId: target.id})
   },
 
-  handleUse(game,commandSuffix = 0){
+  handleUse(game, commandSuffix = 0){
     const index = commandSuffix ? parseInt(commandSuffix) : 0
     const player = game.getPlayer()
-    const context = game.state.uiContext
-    let itemId
-    console.log(player.inventory.map(id => game.getEntity(id)))
-
-    if (context === 'inventory') {
-      itemId = player.inventory[index]
-    } else if (context === 'map') {
-      itemId = game.getNearbyEntitiesWithout('player')[index]
-    }
-
-    const item = game.getEntity(itemId)
+    const context = UI.context
+    const entities = game.getDisplayedEntities()
 
     if (item && item.tags.includes('usable') && item.useScript) {
-      const script = game.loader.loadScript(item.useScript)
-      console.log(script)
+      const script = LOADER.loadScript(item.useScript)
       script(game, helpers, item)
     }
     else {

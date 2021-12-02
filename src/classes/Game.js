@@ -5,15 +5,14 @@ const color = require('../color')
 const commands = require('../commands')
 const inputHandlers = require('../inputHandlers')
 
-const Loader = require('./Loader')
 const storage = require('../storage')
 const spawn = require('../spawn')
 const hydrateEntity = require('../hydrateEntity')
 const Map = require('./Map')
 
+
 module.exports = class Game {
   constructor() {
-    this.loader = new Loader()
     const save = storage.load(0)
     this.defaultState = {
       uiContext: 'map',
@@ -74,12 +73,10 @@ module.exports = class Game {
   tick() {
     const player = this.getPlayer()
     this.getEntitiesAt(player.x, player.y).forEach(entity => {
-      console.log(this.getEntitiesAt(player.x, player.y))
       if (entity.hp > 0 && player.hp > 0) {
         if (entity.id !== 'player') {
           const weaponId = entity.equipped[entity.wieldableSlots[0]]
           const weapon = this.getEntity(weaponId)
-          console.log(entity.name, weapon.name)
           while (weapon && entity.ap > 0 && entity.ap >= weapon.useApCost) {
             entity.target = 'player'
             helpers.adjustAp(entity, -this.getAttackApCost(entity))
@@ -122,7 +119,7 @@ module.exports = class Game {
   spawnCreatures() {
     _.forOwn(this.state.map.cells, cell => {
       if (cell.room) {
-       const spawns = spawn.rollSpawns(this.loader, cell.room)
+       const spawns = spawn.rollSpawns(cell.room)
        spawns.forEach(templateName => {
          const creature = this.addEntity(templateName, cell.x, cell.y)
        })
@@ -205,6 +202,12 @@ module.exports = class Game {
     return Math.floor((attribute - 10))
   }
 
+  getDisplayedEntities() {
+    return this.state.entities.filter(entity => {
+
+    })
+  }
+
   getNearbyEntitiesWithout(excludeId) {
     const player = this.getPlayer()
     return _.filter(this.state.entities, entity => entity.id !== excludeId && entity.x === player.x && entity.y === player.y)
@@ -275,7 +278,6 @@ module.exports = class Game {
   creatureUnequipSlot(creatureId, slotName) {
     const creature = this.getEntity(creatureId)
     const itemId = creature.equipped[slotName]
-    console.log(creatureId, slotName)
     if (itemId) {
       creature.inventory.push(itemId)
       creature.equipped[slotName] = null
@@ -294,7 +296,7 @@ module.exports = class Game {
       // creature.inventory.forEach((item, i) => {
       //   this.creatureDropItem(creature.id, 0)
       // })
-      const drops = spawn.rollSpawns(this.loader, creature)
+      const drops = spawn.rollSpawns(creature)
       drops.forEach(dropName => {
         this.addEntity(dropName, creature.x, creature.y)
       })
@@ -365,7 +367,7 @@ module.exports = class Game {
   }
 
   goToNewMap() {
-    this.state.map = new Map(this.loader, 'map', this.state.depth)
+    this.state.map = new Map('map', this.state.depth)
     // this.getEntitiesWithout('player').forEach(entity => {
     //   this.deleteEntity(entity.id)
     // })
@@ -419,9 +421,9 @@ module.exports = class Game {
     }
   }
 
-  switchUiContext(context) {
-    this.state.uiContext = context
-  }
+  // switchUiContext(context) {
+  //   this.state.uiContext = context
+  // }
 
   handleInput(input) {
     input = input.replace(' ', '')
@@ -482,7 +484,6 @@ module.exports = class Game {
     this.state.actions = []
   }
 
-
   // ADDERS
 
   addAction(action) {
@@ -499,7 +500,7 @@ module.exports = class Game {
 
   // TODO change addEntity to new equipment slot system
   addEntity(templateName, x, y) {
-    const entity = hydrateEntity(this.loader, templateName, x, y)
+    const entity = hydrateEntity(templateName, x, y)
     this.state.entities.push(entity)
 
     entity.hpMax = helpers.rollHealth(entity)

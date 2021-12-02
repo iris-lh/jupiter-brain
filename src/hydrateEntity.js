@@ -1,19 +1,19 @@
 const _ = require('lodash')
 const uuid = require('uuid')
 
-function inherit(loader, templateName, hierarchy = []) {
-  const template = loader.loadTemplate(templateName)
+function inherit(templateName, hierarchy = []) {
+  const template = LOADER.loadTemplate(templateName)
   
   hierarchy.push(template)
   if (template.inherits) {
-    return inherit(loader, template.inherits, hierarchy)
+    return inherit(template.inherits, hierarchy)
   } else {
     return hierarchy.reverse()
   }
 }
 
-module.exports = function hydrateEntity(loader, templateName, x, y) {
-  const hierarchy = inherit(loader, templateName)
+module.exports = function hydrateEntity(templateName, x, y) {
+  const hierarchy = inherit(templateName)
   const entity = _.mergeWith({}, ...hierarchy, (objValue, srcValue)=>{
     if (_.isArray(objValue)) {
       return objValue.concat(srcValue);

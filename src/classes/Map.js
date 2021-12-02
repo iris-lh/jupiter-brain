@@ -4,9 +4,8 @@ const helpers = require('../helpers')
 const hydrateEntity = require('../hydrateEntity')
 
 module.exports = class Map {
-  constructor(loader, templateName, depth = 1) {
-    this.loader = loader
-    const template = this.loader.loadTemplate(templateName)
+  constructor(templateName, depth = 1) {
+    const template = LOADER.loadTemplate(templateName)
 
     this.sizeX = template.sizeX + Math.floor(depth/2) || 0
     this.sizeY = template.sizeY + Math.floor(depth/4) || 0
@@ -68,7 +67,7 @@ module.exports = class Map {
   generateRooms() {
     _.forOwn(this.cells, cell => {
       if (cell.type) {
-        const room = hydrateEntity(this.loader, cell.type)
+        const room = hydrateEntity(cell.type)
         const exits = this.getExits(cell)
         room.exits = exits
         cell.room = room
@@ -109,7 +108,7 @@ module.exports = class Map {
     helpers.assert(Array.isArray(lastDir), 'lastDir must be an array')
     helpers.assert(Array.isArray(branchWeight), 'branchWeight must be an array')
 
-    const template = this.loader.loadTemplate(type)
+    const template = LOADER.loadTemplate(type)
     
     this.branchSteps++
     const defaultBranchWeight = [0,1,1,1,2,2,3]

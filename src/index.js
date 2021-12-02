@@ -2,24 +2,16 @@ const xterm = require('xterm')
 const xtermAddonFit = require('xterm-addon-fit')
 
 const Game = require('./classes/Game')
-const Menu = require('./classes/Menu')
 const Renderer = require('./classes/Renderer')
-const UI = require('./classes/Ui')
+const Ui = require('./classes/Ui')
+const EventSystem = require('./classes/EventSystem')
+const Loader = require('./classes/Loader')
+
+LOADER = new Loader()
+EVENT = new EventSystem()
+UI = new Ui()
 
 const game = new Game()
-
-const ui = new UI(game)
-ui.addMenu(new Menu(
-  'test-menu', 
-  'Test Menu',
-  0, 2,
-  [
-    {text: 'Status', event: {name: 'uiSetContext', params: 'status'}},
-    {text: 'Inventory', event: {name: 'uiSetContext', params: 'inventory'}},
-    {text: 'Equipment', event: {name: 'uiSetContext', params: 'equipment'}},
-  ]
-))
-ui.setActiveMenu('test-menu')
 
 const renderer = new Renderer(game)
 
@@ -28,7 +20,7 @@ const fitAddon = new xtermAddonFit.FitAddon();
 term.loadAddon(fitAddon)
 term.setOption('fontSize', '22')
 term.open(document.getElementById('terminal'));
-term.write(renderer.render(game, ui))
+term.write(renderer.render(game, UI))
 
 let input = ''
 
@@ -40,23 +32,26 @@ window.onresize = e => {
 }
 
 term.onKey(e => {
-  const menu = ui.getActiveMenu()
+  const menu = UI.getActiveMenu()
   if (e.key === '\r') {
     term.clear()
 
-    if (menu) console.log(menu.getSelected())
+    if (menu) UI.confirm()
     else game.loop(input)
 
     input = ''
-    term.write('\r' + renderer.render(game, ui))
+    term.write('\r' + renderer.render(game, UI))
   }
   else if (e.domEvent.key === 'Escape') {
     term.clear()
-    if (menu) ui.clearActiveMenu()
-    else ui.setActiveMenu('test-menu')
+
+    if (menu) UI.clearActiveMenu()
+    else if (UI.context == 'map') EVENT.fire('uiSetActiveMenu', 'ui-menu-gameplay')
+    else UI.setContext('map')
+
     input = ''
-    term.write('\r' + renderer.render(game, ui))
-  } 
+    term.write('\r' + renderer.render(game, UI))
+  }
   else if (e.domEvent.key === 'Backspace') {
     if (input.length) {
       input = input.substring(0, input.length - 1)
@@ -65,29 +60,37 @@ term.onKey(e => {
       term.write('\b')
     }
   } 
+  else if ('0123456789'.includes(e.domEvent.key) && menu) {
+    term.clear()
+
+    const index = parseInt(e.domEvent.key)
+    UI.confirmIndex(index)
+
+    term.write('\r' + renderer.render(game, UI))
+  }
   else if (e.domEvent.key === 'ArrowUp') {
     term.clear()
-    if (menu) ui.moveCursor(0, -1)
+    if (menu) UI.moveCursor(0, -1)
     else game.loop('n')
-    term.write('\r' + renderer.render(game, ui))
+    term.write('\r' + renderer.render(game, UI))
   }
   else if (e.domEvent.key === 'ArrowDown') {
     term.clear()
-    if (menu) ui.moveCursor(0, 1)
+    if (menu) UI.moveCursor(0, 1)
     else game.loop('s')
-    term.write('\r' + renderer.render(game, ui))
+    term.write('\r' + renderer.render(game, UI))
   }
   else if (e.domEvent.key === 'ArrowLeft') {
     term.clear()
-    if (menu) ui.moveCursor(-1, 0)
+    if (menu) UI.moveCursor(-1, 0)
     else game.loop('w')
-    term.write('\r' + renderer.render(game, ui))
+    term.write('\r' + renderer.render(game, UI))
   }
   else if (e.domEvent.key === 'ArrowRight') {
     term.clear()
-    if (menu) ui.moveCursor(1, 0)
+    if (menu) UI.moveCursor(1, 0)
     else game.loop('e')
-    term.write('\r' + renderer.render(game, ui))
+    term.write('\r' + renderer.render(game, UI))
   }
   else {
     input += e.key

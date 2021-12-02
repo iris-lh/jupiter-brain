@@ -1,5 +1,5 @@
 name: Exit
 inherits: structure
-tags: [indestructible]
+tags: [indestructible, usable]
 useScript: onUseExit
 desc: You see a viable point of egress.

@@ -1,0 +1,23 @@
+id: ui-menu-gameplay
+title: Test Menu
+items:
+  - 
+    text: Status
+    event: 
+      name: uiSetContext
+      params: characterSheet
+  - 
+    text: Inventory
+    event:
+      name: uiSetContext
+      params: inventory
+  -
+    text: Equipment
+    event:
+      name: uiSetContext
+      params: equipment
+  -
+    text: System
+    event:
+      name: uiSetActiveMenu
+      params: ui-menu-system

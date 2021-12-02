@@ -1,4 +1,5 @@
 name: Enhancement Station
 inherits: structure
+tags: [usable]
 useScript: onUseEnhancementStation
 desc: This machine can be used to improve your capabilities.

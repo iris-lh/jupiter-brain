@@ -23,12 +23,18 @@ module.exports = class Loader {
     if (this.templateCache[templateName]) return this.templateCache[templateName]
 
     const url = `${this.templatesPath}/${templateName}.yaml`
+    const yamlStr = this.loadText(url)
+    let parsedTemplate
 
-    const template = yaml.parse(this.loadText(url))
+    try {
+      parsedTemplate = yaml.parse(yamlStr)
+    } catch (error) {
+      throw(`LOADER error: could not load template ${templateName}`)
+    }
 
-    this.templateCache[templateName] = template
+    this.templateCache[templateName] = parsedTemplate
 
-    return template
+    return parsedTemplate
   }
 
   loadScript(scriptName) {
@@ -37,7 +43,13 @@ module.exports = class Loader {
     const url = `${this.scriptsPath}/${scriptName}.js`
 
     const scriptString = this.loadText(url)
-    const script = eval(scriptString)
+    let script
+
+    try {
+      script = eval(scriptString)
+    } catch (error) {
+      throw(`LOADER error: could not load script ${scripteName}`)
+    }
 
     this.scriptCache[scriptName] = script
 

@@ -1,4 +1,5 @@
 name: Recycler
 inherits: structure
+tags: [usable]
 useScript: onUseRecycler
 desc: This machine can be used to recycle unwanted items into nanites.
